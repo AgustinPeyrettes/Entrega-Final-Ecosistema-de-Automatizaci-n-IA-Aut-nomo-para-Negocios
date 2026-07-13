@@ -1,0 +1,1240 @@
+{
+  "name": "Entrega final Curso n8n 1",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "CLASIFICACIÓN DE LEADS VIP\nEL FLUJO CALSIFICA CONSULTAS EN CLIENTES VIP Y EN NORMALES/SOLO INTERESADOS, A LOS NORMALES LES DE UNA RESPUESTA PREDETERMINDA Y NOTIFICA SI HAY CLIENTES VIPS PARA RESPUESTAS DE UN HUMANO\n\n\n\npatKj3mSWX9LyKHGy.24ef2a65110bac0f7e3b4d4938b16e0f302c1f1edf473a3f64b9ec08c599cb67",
+        "height": 176,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1904,
+        -240
+      ],
+      "typeVersion": 1,
+      "id": "a27efe05-28cd-46fc-a108-fee000f5307e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "28df0f0e-b21b-4e6f-b52f-9b9f265f4be3",
+      "name": "Cada día 8am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2592,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "q": "is:unread newer_than:1d"
+        }
+      },
+      "id": "e47dfdb8-fbcd-44ab-b610-c7b8837cb12c",
+      "name": "Leer mails nuevos (Gmail)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -2416,
+        0
+      ],
+      "webhookId": "491135e6-679e-4c20-99ea-ce69f1e9f66f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2vArq98goA6B287d",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appzgjYnWxYGNLsdQ",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblJinDDyEDMApEex",
+          "mode": "list",
+          "cachedResultName": "Datos clientes",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ/tblJinDDyEDMApEex"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.id }}",
+            "Nombre": "={{ $json.labels[1].name }}",
+            "Mensaje": "={{ $json.Subject }}",
+            "Mail": "={{ $json.From }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mail",
+              "displayName": "Mail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mensaje",
+              "displayName": "Mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Pendiente",
+                  "value": "Pendiente"
+                },
+                {
+                  "name": "Procesado por IA",
+                  "value": "Procesado por IA"
+                },
+                {
+                  "name": "Determinado por humano",
+                  "value": "Determinado por humano"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Tipo de cliente",
+              "displayName": "Tipo de cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "c4905f9a-7ba7-4cec-83cb-6a6ddea364e3",
+      "name": "Airtable - Crear registro (Pendiente)",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2192,
+        0
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "jBlaiOcptzgTnCkP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.fields['Tipo de cliente'] }}",
+              "rightValue": "VIP",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "15faeb6a-506c-4ec8-b262-6612ed9c8943"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "77dfc26f-8ae3-4a26-8a0c-eb57dcb32676",
+      "name": "¿Es VIP?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1072,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $json.id }}",
+        "emailType": "text",
+        "message": "Hola! Gracias por escribirnos. Recibimos tu mensaje y en breve te responderemos con la información que necesitás. Saludos, equipo begam-ebooks.",
+        "options": {}
+      },
+      "id": "c8d48881-b3d2-4bd7-b925-5a8a83c5f767",
+      "name": "Gmail - Responder (Normal)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -608,
+        240
+      ],
+      "webhookId": "ace2e1d1-ea76-4b49-820f-1d635dffd333",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2vArq98goA6B287d",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "limitWaitTime": true,
+        "resumeAmount": 10,
+        "resumeUnit": "seconds",
+        "options": {
+          "webhookSuffix": "{{ $json.id }}"
+        }
+      },
+      "id": "fa275eae-32c8-4a02-8563-c926cd4a729c",
+      "name": "Esperar aprobación por WhatsApp",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -592,
+        -16
+      ],
+      "webhookId": "1e114d7d-513a-453d-8a1a-ac232e5e2414"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.body.approved }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0cb6f55c-1993-44f6-877b-7ca3a5cc6dfb",
+      "name": "¿Aprobado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -416,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Espera mensajes tipo: \"APROBAR <id>\" o \"RECHAZAR <id>\"\nconst text = ($input.first().json.messages?.[0]?.text?.body || '').trim().toUpperCase();\nconst match = text.match(/(APROBAR|RECHAZAR)\\s+(\\S+)/);\nif (!match) {\n  return [];\n}\nreturn [{\n  json: {\n    accion: match[1],\n    id: match[2],\n    approved: match[1] === 'APROBAR'\n  }\n}];"
+      },
+      "id": "2357faa7-a9b4-42ec-949f-f65c8616e1fa",
+      "name": "Parsear respuesta (Aprobar/Rechazar + id)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2256,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appzgjYnWxYGNLsdQ",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblJinDDyEDMApEex",
+          "mode": "list",
+          "cachedResultName": "Datos clientes",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ/tblJinDDyEDMApEex"
+        },
+        "filterByFormula": "={ id } = '{{ $json.id }}'",
+        "options": {}
+      },
+      "id": "566e1e52-7dba-4fa3-8aa9-b523e6863ad5",
+      "name": "Airtable - Buscar registro por id",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2048,
+        368
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "jBlaiOcptzgTnCkP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.resumeUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ approved: $('Parsear respuesta (Aprobar/Rechazar + id)').first().json.approved }) }}",
+        "options": {}
+      },
+      "id": "1052cdc6-08a7-4f89-b1b1-0bcc4df942f1",
+      "name": "Reanudar espera del Workflow 1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1824,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Sos un asistente que clasifica clientes.\n\nAnalizá el siguiente correo.\n\nDebés devolver exclusivamente un JSON.\n\nReglas:\n\nVIP si:\n- menciona presupuesto grande\n- habla de contratación empresarial\n- solicita reunión\n- parece una oportunidad comercial importante\n\nNormal si:\n- consultas simples\n- soporte\n- información\n- dudas generales\n- no creas que sea urgente\n- promociones de otras empresas\n- No entre dentro de lo mencionado en VIP\n\nRespuesta EXACTA:\n\nVIP\no\nNormal",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1952,
+        0
+      ],
+      "id": "7ba0192c-779c-465a-b60d-da8f01108062",
+      "name": "AI Agent",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1952,
+        176
+      ],
+      "id": "1d3e33a2-b73c-4d06-9b71-ec7479b15934",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "FSFzSYihfXTJG35i",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "credenciales wpp\nID -1426755825953805\nST -  06ab7695d3332cf2f1ff9cf4a742b304\nBusiness Account ID:\n2141117460002087\n",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -880,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "b6788c04-571b-49f4-a389-cc66790b25cb",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  let output = item.json.output;\n\n  // Eliminar markdown y espacios\n  output = output\n    .replace(/```json/g, '')\n    .replace(/```/g, '')\n    .trim();\n\n  let clasificacion;\n\n  try {\n    // Si viene como JSON {\"clasificacion\":\"VIP\"}\n    const parsed = JSON.parse(output);\n\n    if (typeof parsed === 'object' && parsed.clasificacion) {\n      clasificacion = parsed.clasificacion;\n    } else {\n      clasificacion = parsed;\n    }\n  } catch {\n    // Si viene como string simple \"VIP\"\n    clasificacion = output.replace(/\"/g, '').trim();\n  }\n\n  return {\n    json: {\n      tipo_cliente: clasificacion\n    }\n  };\n});"
+      },
+      "id": "bb06f467-9daf-4a4b-965a-99b9275efef6",
+      "name": "Parsear respuesta IA1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1648,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appzgjYnWxYGNLsdQ",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblJinDDyEDMApEex",
+          "mode": "list",
+          "cachedResultName": "Datos clientes",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ/tblJinDDyEDMApEex"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable - Crear registro (Pendiente)').item.json.id }}",
+            "Tipo de cliente": "={{ $json.tipo_cliente }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mail",
+              "displayName": "Mail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mensaje",
+              "displayName": "Mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Pendiente",
+                  "value": "Pendiente"
+                },
+                {
+                  "name": "Procesado por IA",
+                  "value": "Procesado por IA"
+                },
+                {
+                  "name": "Determinado por humano",
+                  "value": "Determinado por humano"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Tipo de cliente",
+              "displayName": "Tipo de cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "884f6582-8992-4fa8-9bc8-cf2bdf29b412",
+      "name": "Airtable - Define estado cliente",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1456,
+        0
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "jBlaiOcptzgTnCkP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appzgjYnWxYGNLsdQ",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblJinDDyEDMApEex",
+          "mode": "list",
+          "cachedResultName": "Datos clientes",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ/tblJinDDyEDMApEex"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Estado": "Procesado por IA",
+            "id": "={{ $('Airtable - Crear registro (Pendiente)').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mail",
+              "displayName": "Mail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mensaje",
+              "displayName": "Mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tipo de cliente",
+              "displayName": "Tipo de cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -1264,
+        0
+      ],
+      "id": "2eff1bd4-3e2b-4fcc-8aae-e6bc4240ec9c",
+      "name": "Pone procesado por IA",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "jBlaiOcptzgTnCkP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "TRABAJADO POR EL PERSONAL"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        32,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "86334fcc-1abb-4081-becc-2d670a814b4f",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "phoneNumberId": "1137870592753009",
+        "recipientPhoneNumber": " +542494007088",
+        "message": "Analiza el cliente detallado en Airtable y determina si es VIP",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "VIP",
+            "disapproveLabel": "Normal"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -800,
+        -16
+      ],
+      "id": "43a4b5f5-0bb9-4897-9fb4-2e9d181c9cab",
+      "name": "Send message and wait for response",
+      "webhookId": "cad8ab2f-00c3-448a-b84f-347150d5c04f",
+      "executeOnce": false,
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "epR9n1E8NRr2ASBq",
+          "name": "WhatsApp account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "Respuesta generica para consultas y clientes de clasificación normal"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -672,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "6414e5f6-8d62-43df-8c7e-3ee3b28e68fe",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appzgjYnWxYGNLsdQ",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblJinDDyEDMApEex",
+          "mode": "list",
+          "cachedResultName": "Datos clientes",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ/tblJinDDyEDMApEex"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Estado": "Normal aprobado por humano",
+            "id": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mail",
+              "displayName": "Mail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mensaje",
+              "displayName": "Mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tipo de cliente",
+              "displayName": "Tipo de cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "8a365da7-9802-45d7-86aa-0c539d7b1fac",
+      "name": "Cliente Normal aprobado por humano",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -160,
+        240
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "jBlaiOcptzgTnCkP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appzgjYnWxYGNLsdQ",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblJinDDyEDMApEex",
+          "mode": "list",
+          "cachedResultName": "Datos clientes",
+          "cachedResultUrl": "https://airtable.com/appzgjYnWxYGNLsdQ/tblJinDDyEDMApEex"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Estado": "VIP aprobado por humano"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mail",
+              "displayName": "Mail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mensaje",
+              "displayName": "Mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tipo de cliente",
+              "displayName": "Tipo de cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "fdfc8393-ce66-4309-91ba-072cdce34945",
+      "name": "Cliente Vip aprobado por humano",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -160,
+        -32
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "jBlaiOcptzgTnCkP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "id": "83cd17ca-a98d-4ab3-9c06-2495df60351d",
+      "name": "WhatsApp - aprobacion/rechazo",
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2480,
+        368
+      ],
+      "webhookId": "REEMPLAZAR",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "37TPP1w9iAa8Hq3D",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cada día 8am": {
+      "main": [
+        [
+          {
+            "node": "Leer mails nuevos (Gmail)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer mails nuevos (Gmail)": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Crear registro (Pendiente)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Crear registro (Pendiente)": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es VIP?": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail - Responder (Normal)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar aprobación por WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "¿Aprobado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Aprobado?": {
+      "main": [
+        [
+          {
+            "node": "Cliente Vip aprobado por humano",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail - Responder (Normal)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Responder (Normal)": {
+      "main": [
+        [
+          {
+            "node": "Cliente Normal aprobado por humano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsear respuesta (Aprobar/Rechazar + id)": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Buscar registro por id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Buscar registro por id": {
+      "main": [
+        [
+          {
+            "node": "Reanudar espera del Workflow 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Parsear respuesta IA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsear respuesta IA1": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Define estado cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Define estado cliente": {
+      "main": [
+        [
+          {
+            "node": "Pone procesado por IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pone procesado por IA": {
+      "main": [
+        [
+          {
+            "node": "¿Es VIP?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "Esperar aprobación por WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cliente Vip aprobado por humano": {
+      "main": [
+        []
+      ]
+    },
+    "WhatsApp - aprobacion/rechazo": {
+      "main": [
+        [
+          {
+            "node": "Parsear respuesta (Aprobar/Rechazar + id)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "518961b8-d114-44ff-ae4f-96140211c72e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5bb385599d3a84157d2ed73e3e0a7fd8ac41047fc206d1b0c0b7ca28646d2151"
+  },
+  "nodeGroups": [],
+  "id": "0VzSQ2lHibVmxWjZ",
+  "tags": []
+}
